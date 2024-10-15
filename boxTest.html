@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #canvas {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <p>speedx=<span id="htmlspeedx"></span></p>
+    <p>speedy=<span id="htmlspeedy"></span></p>
+</body>
+
+</html>
+
+<script>
+    function getRandom(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    var canvas = document.getElementById("canvas");
+    window.addEventListener("resize", resizecanvas)
+    canvas.width = window.innerWidth + 20;
+    canvas.height = window.innerHeight + 20;
+    function resizecanvas() {
+        canvas.width = window.innerWidth + 20;
+        canvas.height = window.innerHeight + 20;
+        //This was trying to fix a problem where when resizing you can obliterate the square
+        //It did not work :(
+        //if (x>=window.innerWidth){x=window.innerWidth+125}
+        //if (y>=window.innerHeight){y=window.innerHeight+125}
+    }
+    var ctx = canvas.getContext("2d")
+    var x = canvas.width / 2
+    var y = canvas.height / 2
+    var speedx = getRandom(-10, 10)
+    if (speedx < 1.5 && speedx > -1.5) {
+        speedx = Math.round
+        if (speedx = Math.abs(1)) {
+            speedx = speedx * 2
+        }
+        else if (speedx = 0) {
+            speedx = speedx + 1
+        }
+    }
+    if (speedx < 0) {
+        speedy = -12 - speedx
+    }
+    if (speedx >= 0) {
+        speedy = 12 - speedx
+    }
+    const speedmult = 1.05
+    setInterval(bounce, 20)
+
+    function bounce() {
+        if (x >= window.innerWidth) {
+            speedx = -speedx
+            if (speedx < 0) {
+                speedx = speedx * speedmult
+            }
+            else if (speedx > 0) {
+                speedx = speedx * speedmult
+            }
+        }
+        if (y >= window.innerHeight) {
+            speedy = -speedy
+            if (speedy < 0) {
+                speedy = speedy * speedmult
+            }
+            else if (speedy > 0) {
+                speedy = speedy
+            }
+        }
+        if (x <= 0) {
+            speedx = -speedx
+            if (speedx < 0) {
+                speedx = speedx * speedmult
+            }
+            else if (speedx > 0) {
+                speedx = speedx * speedmult
+            }
+        }
+        if (y <= 0) {
+            speedy = -speedy
+            if (speedy < 0) {
+                speedy = speedy * speedmult
+            }
+            else if (speedy > 0) {
+                speedy = speedy * speedmult
+            }
+        }
+        document.getElementById("htmlspeedx").textContent = speedx;
+        document.getElementById("htmlspeedy").textContent = speedy;
+
+    }
+
+    setInterval(drawball, 20)
+
+    function drawball() {
+        x = x + speedx
+        y = y + speedy
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.fillRect(x, y, 20, 20)
+    }
+
+
+</script>

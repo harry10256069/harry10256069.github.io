@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #bBamboo {
+            width: 25%;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 3%;
+            display: block;
+        }
+
+        #htmlBamboo,
+        #htmlBambooPerSecond,
+        #htmlPrestigeMult {
+            text-align: center;
+        }
+
+        #buyMenu {
+            position: fixed;
+            top: 20px;
+            left: 30px;
+        }
+
+        #prestigeButton {
+            position: sticky;
+            bottom: 0px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block
+        }
+    </style>
+</head>
+
+<body>
+    <h2 id="htmlBamboo">Bamboo: 0</h2>
+    <h3 id="htmlBambooPerSecond">Bamboo Per Second: 0</h3>
+    <h4 id="htmlPrestigeMult"></h4>
+    <img id="bBamboo" src="bamboo-png-40471.png"><br>
+    <div id="buyMenu">
+        <h3>Acquire M O R E</h3>
+        <input id="getPlanterButton" type="button" value="Planter">
+        <p id="htmlPlanters">Planters: 0</p>
+        <input id="getFriendButton" type="button" value="Friend">
+        <p id="htmlFriends">Friends: 0</p>
+    </div>
+    <input type="button" id="prestigeButton" value="Prestige">
+</body>
+
+</html>
+<script>
+    clickIncrement = 1;
+    bamboo = 0;
+    planters = 0;
+    friends = 0;
+    increment = 0;
+    pMaxBamboo = 0;
+    maxBamboo = 0;
+    prestigeMult = 1;
+    function refresh() {
+        bamboo = bamboo + (increment);
+        document.getElementById("htmlBamboo").innerHTML = "Bamboo: " + Math.round(bamboo);
+        if (bamboo > maxBamboo) {
+            maxBamboo = bamboo
+        }
+    }
+    setInterval(refresh, 100)
+    document.getElementById("bBamboo").addEventListener("click", function () {
+        bamboo = bamboo + clickIncrement;
+    })
+    document.getElementById("getPlanterButton").addEventListener("click", function () {
+        if (bamboo >= 20) {
+            planters = planters + 1;
+            bamboo = bamboo - 10;
+            increment = (0.1 * planters) * prestigeMult;
+            document.getElementById("htmlPlanters").innerHTML = "Planters: " + planters;
+            document.getElementById("htmlBambooPerSecond").innerHTML = "Bamboo Per Second: " + (increment * 10).toFixed(2);
+
+        }
+        else {
+            alert("broke L");
+        }
+    })
+    document.getElementById("getFriendButton").addEventListener("click", function () {
+        if (bamboo >= 15) {
+            friends = friends + 1;
+            bamboo = bamboo - 15;
+            clickIncrement = 1 + (friends * prestigeMult);
+            document.getElementById("htmlFriends").innerHTML = "Friends: " + friends;
+        }
+        else {
+            alert("broke L");
+        }
+    })
+    document.getElementById("prestigeButton").addEventListener("click", function () {
+        if (bamboo >= (50 + pMaxBamboo) && friends >= 25 && planters >= 25) {
+            prestigeMult = prestigeMult + (maxBamboo * 0.0025)
+            bamboo = 0;
+            friends = 0;
+            planters = 0;
+            pMaxBamboo = maxBamboo;
+            maxBamboo = 0;
+            increment = 0;
+            clickIncrement = 1 * prestigeMult;
+            refresh()
+            document.getElementById("htmlFriends").innerHTML = "Friends: " + friends;
+            document.getElementById("htmlPlanters").innerHTML = "Planters: " + planters;
+            document.getElementById("htmlBambooPerSecond").innerHTML = "Bamboo Per Second: " + (increment * 10).toFixed(2);
+            document.getElementById("htmlPrestigeMult").innerHTML = "Prestige Multiplier: " + prestigeMult.toFixed(2) + "x";
+        }
+        else {
+            alert("broke L");
+        }
+    })
+</script>
