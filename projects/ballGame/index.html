@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+        }
+
+        #boardCanvas {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            pointer-events: none;
+        }
+
+        #plinkoCanvas {
+            left: 0;
+            margin: 0;
+            width: 55vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+        }
+
+        #factoryCanvas {
+            right: 0;
+            margin: 0;
+            width: 45vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="plinkoCanvas"></canvas>
+    <canvas id="factoryCanvas"></canvas>
+    <canvas id="boardCanvas"></canvas>
+</body>
+
+</html>
+
+<script>
+    //Basic setup for canvas and resizing, still has commented out issue to fix
+    const plinkoCanvas = document.getElementById("plinkoCanvas");
+    const plinkoCtx = plinkoCanvas.getContext("2d");
+
+    const factoryCanvas = document.getElementById("factoryCanvas"); // Added factory canvas
+    const factoryCtx = factoryCanvas.getContext("2d"); // Added factory canvas context
+
+    const boardCanvas = document.getElementById("boardCanvas"); // Added board canvas
+    const boardCtx = boardCanvas.getContext("2d"); // Added board canvas context
+
+    function resizecanvas() {
+        plinkoCanvas.width = window.innerWidth *0.55;
+        plinkoCanvas.height = window.innerHeight;
+        plinkoCanvas.ratio = plinkoCanvas.width/plinkoCanvas.height
+        factoryCanvas.width = window.innerWidth - plinkoCanvas.width;
+        factoryCanvas.height = window.innerHeight;
+        boardCanvas.width = window.innerWidth;
+        boardCanvas.height = window.innerHeight;
+
+        //wallRight
+        boardCtx.beginPath();
+        boardCtx.moveTo(plinkoCanvas.width, 0);
+        boardCtx.lineTo(plinkoCanvas.width, window.innerHeight);
+        boardCtx.strokeStyle = "black";
+        boardCtx.lineWidth = 5;
+        boardCtx.stroke();
+
+         //wallLeft
+        boardCtx.beginPath();
+        boardCtx.moveTo(0, 0);
+        boardCtx.lineTo(0, window.innerHeight);
+        boardCtx.strokeStyle = "black";
+        boardCtx.lineWidth = 5;
+        boardCtx.stroke();
+
+        //Roof
+        boardCtx.strokeStyle = "black";
+        boardCtx.beginPath();
+        boardCtx.moveTo(0, 2.5)
+        boardCtx.lineTo(((plinkoCanvas.width / 3)), 2.5);
+        boardCtx.moveTo(((plinkoCanvas.width / 3) * 2), 2.5);
+        boardCtx.lineTo(plinkoCanvas.width, 2.5);
+        boardCtx.stroke();
+
+        //floor
+        boardCtx.strokeStyle = "red";
+        boardCtx.beginPath();
+        boardCtx.moveTo(0, (innerHeight - 2.5))
+        boardCtx.lineTo(plinkoCanvas.width, (innerHeight - 2.5));
+        boardCtx.stroke();
+    };
+    window.addEventListener("resize", resizecanvas);
+    resizecanvas();
+
+    //Misc Setup
+    function getRandom(min, max) {
+        return Math.random() * (max - min) + min;
+    };
+
+    //Square Constructor
+    function newRectangle() {
+        this.health = 5 //random later
+        this.markedForDeath = false
+        this.markedForMove = false
+        this.width = plinkoCanvas.width/20
+        this.height = plinkoCanvas.width/20
+        this.color = "orange"
+        this.xPos = (plinkoCanvas.width / 2) - this.width/2
+        this.ypos = this.height + this.height
+        //plinkoCanvas.height - this.height - 3
+    };
+
+    //Obstacle Generator
+    function obstacleGenerator() {
+        //random to select shape
+        //rectangle
+        //make shape
+    };
+
+    let Obstacles = []
+    Obstacles.push(new newRectangle())
+
+    //Basic Ball Constructer
+    function newBasicBall() {
+        this.type = "basic";
+        this.color = "black";
+        this.size = plinkoCanvas.ratio*10;
+        this.bounce = 0.5;
+        this.gravity = 1;
+        this.damage = 1;
+        this.xPos = (plinkoCanvas.width / 2);
+        this.yPos = 25;
+        this.ySpeed = 0;
+        this.xSpeed = 0;
+
+        this.updatePosition = function () {
+            // Calculate new speeds
+            this.xSpeed = this.xSpeed; // No change in xSpeed for now, collisions later
+            if (this.ySpeed <= 70) {
+                this.ySpeed += plinkoCanvas.height * (0.00025 * this.gravity);
+                //0.0005 is modifier so this.gravity numbers are more reasonable and understandable
+            }
+            // Calculate new positions
+            this.xPos += this.xSpeed;
+            this.yPos += this.ySpeed;
+        };
+    };
+
+    let Balls = [];
+    //Make basic ball at start
+    Balls.push(new newBasicBall());
+
+    //Plinko Loops
+    setInterval(mainPlikoLoop, 10);
+    function mainPlikoLoop() {
+        plinkoCtx.clearRect(0, 0, plinkoCanvas.width, plinkoCanvas.height);
+        //Obstacle code, go through obstacle list with switch statement & for loop
+       for (let i = 0; i < Obstacles.length; i++) {
+         plinkoCtx.fillStyle = Obstacles[i].color;
+         plinkoCtx.fillRect(Obstacles[i].xPos,Obstacles[i].ypos,Obstacles[i].width, Obstacles[i].height);
+        //Obstacles move
+        };
+        for (let i = 0; i < Balls.length; i++) {
+                Balls[i].updatePosition(); // Update the ball's position
+                //check collision
+                if (checkCollision(i) === true){
+                    alert("collision")
+                }
+                else{
+                plinkoCtx.beginPath();
+                plinkoCtx.arc(Balls[i].xPos, Balls[i].yPos, Balls[i].size, 0, 2 * Math.PI);
+                plinkoCtx.fillStyle = Balls[i].color;
+                plinkoCtx.fill();
+                plinkoCtx.lineWidth = 2;
+                if (
+                    Balls[i].outlineColor != undefined
+                ) {
+                    plinkoCtx.strokeStyle = Balls[i].outlineColor;
+                }
+                else {
+                    plinkoCtx.strokeStyle = "black";
+                }
+                plinkoCtx.stroke();
+                }
+            }};
+
+    function checkCollision(ballID){
+        
+        for (let i = 0; i < Obstacles.length; i++) {
+            if(
+            (Balls[ballID].xPos+Balls[ballID].size >= Obstacles[i].xPos //right greater than left
+            &&
+            Balls[ballID].xPos-Balls[ballID].size <= (Obstacles[i].xPos + Obstacles[i].width))  //left less than right
+            &&
+            (Balls[ballID].yPos+Balls[ballID].size >= Obstacles[i].yPos //bottom greater (lower) than top
+            &&
+            Balls[ballID].yPos-Balls[ballID].size <= (Obstacles[i].yPos + Obstacles[i].height)) //top less than (above) bottom
+            )
+            {
+                //create object here that contains bouncing data
+                var collidedShape = i
+                return true
+            }
+            else {
+                return false
+                alert("false")
+            }
+        }
+    }
+
+
+
+
+    resizecanvas()
+    //Obstacle mark for move/creation function goes here
+
+    //Obstacle collision/health function
+    
+    //ISSUES 
+        //183
+        //existing balls/shapes don't change x and y coords correctly on resize
+            //maybe delete all balls and remake on resize?
+        //for loop 168
+        //check collison return data neccesary for bounce?
+        //remove right half of screen?
+
+
+
+    //Factory Ball shooter game
+    //defualt ball: 10px,bounce loses 50% speed, gravity: 50px?, damage: 1, lifespan, 3 seconds
+    //score by balls hitting goals (shapes) and by breaking them
+    //balls collide with each other and have some random nature to them
+    //balls have stats made by factory such as: size, bounce, gravity, damage, lifespan, special
+    //factory side has grid of 8 by 12 with resources randomized (not on edge)
+    //rounds where shapes slowly move up, if they reach the top, you lose.
+    //after each round grace period for 60 sec (can be ended early) for upgrades and factory to run
+    //buildings in factory include (sorted in types):
+    //logistics/resources
+    //conveyer (move resources, holds one, 1sec)
+    //spliter (always round robin)
+    //merger (picks up round robin)
+    //collecter (pick up resources, hold one, 1 sec)
+    //ball improvements
+    //ball managers (add ball of type, requires a resource)
+    //reseach center (learn new ball managers and blueprints)
+    //heavy ball (1.5 gravity, 1.5 damage)
+    //Beanbag (no bounce, 3x lifespan)
+    //Big red button (3x bounce, 3x damage, 2x lifespan, cannot fall out of board, single use)
+    //Factory improvements
+    //conveyer mk2 (0.5sec)
+    //conveyer mk3 (0.25sec)
+    //refiner (combines resources into new one)
+    //collecter mk2 (0.5)
+    //collecter mk3 (0.5*4 exits)
+</script>
