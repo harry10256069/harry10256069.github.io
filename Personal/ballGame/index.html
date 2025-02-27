@@ -178,7 +178,7 @@
                 if (checkCollision(i) === true){
                     alert("collision")
                 }
-                else{
+                //else{
                 plinkoCtx.beginPath();
                 plinkoCtx.arc(Balls[i].xPos, Balls[i].yPos, Balls[i].size, 0, 2 * Math.PI);
                 plinkoCtx.fillStyle = Balls[i].color;
@@ -194,28 +194,33 @@
                 }
                 plinkoCtx.stroke();
                 }
-            }};
+            }//};
 
     function checkCollision(ballID){
         
         for (let i = 0; i < Obstacles.length; i++) {
             if(
-            (Balls[ballID].xPos+Balls[ballID].size >= Obstacles[i].xPos //right greater than left
+          //  //    ((1===1)&&(2===2))&&((3===3)&&(4===4))
+            (
+            Balls[ballID].xPos+Balls[ballID].size >= Obstacles[i].xPos //right greater than left
             &&
-            Balls[ballID].xPos-Balls[ballID].size <= (Obstacles[i].xPos + Obstacles[i].width))  //left less than right
+            Balls[ballID].xPos-Balls[ballID].size <= (Obstacles[i].xPos + Obstacles[i].width) //left less than right
             &&
-            (Balls[ballID].yPos+Balls[ballID].size >= Obstacles[i].yPos //bottom greater (lower) than top
-            &&
-            Balls[ballID].yPos-Balls[ballID].size <= (Obstacles[i].yPos + Obstacles[i].height)) //top less than (above) bottom
-            )
+            //(
+            //Balls[ballID].yPos+Balls[ballID].size >= Obstacles[i].yPos //bottom greater (lower) than top
+           // &&
+            //Balls[ballID].yPos-Balls[ballID].size <= (Obstacles[i].yPos + Obstacles[i].height) //top less than (above) bottom
+            //Balls[ballID].yPos <= 200 (WORKS WHY WONT ABOVE, IT HAS TO BE IN OBSTACLES ARRAY)
+           )
+        ) 
             {
                 //create object here that contains bouncing data
-                var collidedShape = i
+                //collidedShape = i (remember to set var in setup)
                 return true
             }
             else {
+                //alert(Balls[ballID].yPos+Balls[ballID].size + "  " + Obstacles[i].ypos)
                 return false
-                alert("false")
             }
         }
     }
